@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="NL-nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Besprekingen Scheduler</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>School Besprekingen Scheduler</h1>
+        <form id="scheduler-form">
+            <div class="form-group">
+                <label for="file-input">Excel-bestand:</label>
+                <input type="file" id="file-input" accept=".xlsx">
+            </div>
+            <div class="form-group">
+                <label for="rooms-input">Lokalen (komma gescheiden):</label>
+                <input type="text" id="rooms-input" value="222,223,224">
+            </div>
+            <div class="form-group">
+                <label for="start-date-input">Start Datum:</label>
+                <input type="date" id="start-date-input">
+                <label for="end-date-input">Eind Datum:</label>
+                <input type="date" id="end-date-input">
+            </div>
+            <div class="form-group">
+                <label for="start-time-input">Start Tijd:</label>
+                <input type="time" id="start-time-input" value="09:00">
+                <label for="end-time-input">Eind Tijd:</label>
+                <input type="time" id="end-time-input" value="16:30">
+            </div>
+            <div class="form-group">
+                <label for="slot-duration-input">Tijdslot duur (minuten):</label>
+                <input type="number" id="slot-duration-input" value="30" min="1">
+                <label for="max-overlap-input">Maximale overlap (docenten):</label>
+                <input type="number" id="max-overlap-input" value="0" min="0">
+            </div>
+            <div class="form-group">
+                <input type="checkbox" id="debug-checkbox">
+                <label for="debug-checkbox">DEBUG modus</label>
+            </div>
+            <div class="form-group">
+                <button type="button" id="generate-btn">Genereer Planning</button>
+                <button type="button" id="cluster-btn">Voeg/Update Cluster</button>
+            </div>
+        </form>
+        <div id="output-area"></div>
+    </div>
+    <div id="cluster-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">×</span>
+            <h2>Voeg of Pas Cluster Toe</h2>
+            <form id="cluster-form">
+                <div class="form-group">
+                    <label for="cluster-base-input">Cluster basis (bv. A3V1):</label>
+                    <input type="text" id="cluster-base-input">
+                </div>
+                <div class="form-group">
+                    <label for="cluster-codes-input">Uitgebreide klassen (komma gescheiden):</label>
+                    <input type="text" id="cluster-codes-input">
+                </div>
+                <button type="button" id="update-cluster-btn">Update Cluster Mapping</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
