@@ -1,13 +1,10 @@
-// Default cluster mapping
 const DEFAULT_CLUSTER_MAPPING = {
     "A3H1": ["A3HA", "A3HB", "A3HC"],
     "A3H2": ["A3HA", "A3HB", "A3HC"]
 };
 
-// Load cluster mapping from local storage or use default
 let CLUSTER_MAPPING = JSON.parse(localStorage.getItem('cluster_mapping')) || DEFAULT_CLUSTER_MAPPING;
 
-// Function to format date in Dutch notation (DD/MM/YYYY)
 function formatDutchDate(date) {
     return date.toLocaleDateString('nl-NL', {
         day: '2-digit',
@@ -16,12 +13,10 @@ function formatDutchDate(date) {
     });
 }
 
-// Save cluster mapping to local storage
 function saveClusterMapping() {
     localStorage.setItem('cluster_mapping', JSON.stringify(CLUSTER_MAPPING));
 }
 
-// Store Excel data when file is selected
 let excelData = null;
 document.getElementById('file-input').addEventListener('change', function(event) {
     const file = event.target.files[0];
@@ -38,14 +33,12 @@ document.getElementById('file-input').addEventListener('change', function(event)
     }
 });
 
-// Set default dates to today
 document.addEventListener('DOMContentLoaded', function() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('start-date-input').value = today;
     document.getElementById('end-date-input').value = today;
 });
 
-// Generate schedule button
 document.getElementById('generate-btn').addEventListener('click', function() {
     if (!excelData) {
         alert('Selecteer eerst een Excel-bestand.');
@@ -61,7 +54,6 @@ document.getElementById('generate-btn').addEventListener('click', function() {
     const maxOverlap = parseInt(document.getElementById('max-overlap-input').value);
     const debugMode = document.getElementById('debug-checkbox').checked;
 
-    // Calculate the number of days between start and end date
     const daysDiff = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
     if (daysDiff > 14) {
         alert('De geselecteerde datumrange is te groot (meer dan 14 dagen). Pas de datums aan.');
@@ -104,7 +96,6 @@ document.getElementById('generate-btn').addEventListener('click', function() {
     document.getElementById('output-area').innerHTML = output;
 });
 
-// Process Excel data
 function processExcelData(data, debugMode, debugLog) {
     if (!data || data.length === 0) return null;
 
@@ -137,7 +128,6 @@ function processExcelData(data, debugMode, debugLog) {
     return classes;
 }
 
-// Generate time slots
 function generateTimeSlots(startDate, endDate, startTime, endTime, slotDuration, debugMode, debugLog) {
     const timeslots = [];
     const currentDate = new Date(startDate);
@@ -162,7 +152,6 @@ function generateTimeSlots(startDate, endDate, startTime, endTime, slotDuration,
     return timeslots;
 }
 
-// Schedule classes
 function scheduleClasses(classes, timeslots, rooms, maxOverlap, debugMode, debugLog) {
     const teacherUsage = timeslots.map(() => ({}));
     timeslots.forEach(slot => {
@@ -217,11 +206,10 @@ function scheduleClasses(classes, timeslots, rooms, maxOverlap, debugMode, debug
     return { scheduledTimeslots: timeslots, unscheduled };
 }
 
-// Generate schedule table with Dutch date and time formats
 function generateScheduleTable(timeslots, rooms) {
     const scheduleByDay = {};
     timeslots.forEach(slot => {
-        const dayKey = slot.day.getTime(); // Use timestamp for sorting
+        const dayKey = slot.day.getTime();
         if (!scheduleByDay[dayKey]) {
             scheduleByDay[dayKey] = { day: slot.day, slots: [] };
         }
@@ -231,7 +219,7 @@ function generateScheduleTable(timeslots, rooms) {
     let html = '';
     Object.keys(scheduleByDay).sort((a, b) => a - b).forEach(dayKey => {
         const dayData = scheduleByDay[dayKey];
-        const dayStr = formatDutchDate(dayData.day); // e.g., "13/03/2025"
+        const dayStr = formatDutchDate(dayData.day);
         html += `<h3>Dag: ${dayStr}</h3>`;
         html += '<table><tr><th>Tijdslot</th>';
         rooms.forEach(room => html += `<th>${room}</th>`);
@@ -246,7 +234,7 @@ function generateScheduleTable(timeslots, rooms) {
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: false
-            })}`; // e.g., "08:30-09:00"
+            })}`;
             html += `<tr><td>${timeStr}</td>`;
             rooms.forEach(room => {
                 const assignment = slot.assignments[room] || '';
@@ -259,7 +247,6 @@ function generateScheduleTable(timeslots, rooms) {
     return html;
 }
 
-// Check for conflicts
 function checkForConflicts(timeslots, classes, maxOverlap, debugMode, debugLog) {
     let conflicts = [];
     timeslots.forEach((slot, index) => {
@@ -283,7 +270,6 @@ function checkForConflicts(timeslots, classes, maxOverlap, debugMode, debugLog) 
     return conflicts;
 }
 
-// Cluster modal handling
 const modal = document.getElementById('cluster-modal');
 const clusterBtn = document.getElementById('cluster-btn');
 const closeBtn = document.querySelector('.modal .close');
