@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Besprekingen Scheduler</title>
+    <title>Leerlingbesprekingplanner</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="/icon.ico">
 </head>
 <body>
     <div class="container">
-        <h1>School Besprekingen Scheduler</h1>
+        <h1>Leerlingbesprekingplanner</h1>
         <form id="scheduler-form">
             <div class="form-group">
                 <label for="file-input">Excel-bestand:</label>
@@ -20,15 +21,15 @@
                 <input type="text" id="rooms-input" value="222,223,224">
             </div>
             <div class="form-group">
-                <label for="start-date-input">Start Datum:</label>
+                <label for="start-date-input">Startdatum:</label>
                 <input type="date" id="start-date-input">
-                <label for="end-date-input">Eind Datum:</label>
+                <label for="end-date-input">Einddatum:</label>
                 <input type="date" id="end-date-input">
             </div>
             <div class="form-group">
-                <label for="start-time-input">Start Tijd:</label>
+                <label for="start-time-input">Starttijd:</label>
                 <input type="time" id="start-time-input" value="09:00">
-                <label for="end-time-input">Eind Tijd:</label>
+                <label for="end-time-input">Eindtijd:</label>
                 <input type="time" id="end-time-input" value="16:30">
             </div>
             <div class="form-group">
@@ -42,8 +43,8 @@
                 <label for="debug-checkbox">DEBUG modus</label>
             </div>
             <div class="form-group">
-                <button type="button" id="generate-btn">Genereer Planning</button>
-                <button type="button" id="cluster-btn">Voeg/Update Cluster</button>
+                <button type="button" id="generate-btn">Genereer planning</button>
+                <button type="button" id="cluster-btn">Voeg/update cluster</button>
             </div>
         </form>
         <div id="output-area"></div>
@@ -51,7 +52,7 @@
     <div id="cluster-modal" class="modal">
         <div class="modal-content">
             <span class="close">×</span>
-            <h2>Voeg of Pas Cluster Toe</h2>
+            <h2>Voeg of pas cluster aan</h2>
             <form id="cluster-form">
                 <div class="form-group">
                     <label for="cluster-base-input">Cluster basis (bv. A3V1):</label>
@@ -61,7 +62,7 @@
                     <label for="cluster-codes-input">Uitgebreide klassen (komma gescheiden):</label>
                     <input type="text" id="cluster-codes-input">
                 </div>
-                <button type="button" id="update-cluster-btn">Update Cluster Mapping</button>
+                <button type="button" id="update-cluster-btn">Update cluster mapping</button>
             </form>
         </div>
     </div>
