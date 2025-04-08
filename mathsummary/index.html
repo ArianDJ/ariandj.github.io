@@ -1,0 +1,1398 @@
+Copy
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pythagoras' Theorem - Interactive Learning</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #1e40af;
+            --accent-color: #f59e0b;
+            --bg-color: #f3f4f6;
+            --text-color: #1f2937;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .header-bg {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .theorem-box {
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .example-box {
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+        }
+        
+        .interactive-controls {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .step-highlight {
+            background-color: #e5edff;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .practice-problem {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .practice-problem:hover {
+            border-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tab-btn {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        #triangleCanvas {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #rectangle-checker-canvas {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .right-angle-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-right: 3px solid #333;
+            border-bottom: 3px solid #333;
+        }
+
+        /* Animation for right angle symbol */
+        @keyframes drawRightAngle {
+            0% { width: 0; height: 0; }
+            100% { width: 20px; height: 20px; }
+        }
+
+        .animate-right-angle {
+            animation: drawRightAngle 0.5s forwards;
+        }
+
+        /* Custom progress bar */
+        .progress-bar {
+            height: 8px;
+            background-color: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        /* Nice scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Collapsible sections */
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .collapsible-content.open {
+            max-height: 1000px;
+        }
+        
+        /* 3D visualization container */
+        .visualization-3d {
+            perspective: 1000px;
+        }
+        
+        .triangle-3d {
+            transition: transform 0.5s;
+        }
+        
+        .triangle-3d:hover {
+            transform: rotateY(30deg) rotateX(10deg);
+        }
+
+        /* Always make sketch notice */
+        .sketch-notice {
+            background-color: #ffedd5;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+
+        /* Vertex labels */
+        .vertex-label {
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            font-size: 18px;
+            fill: #000;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header Section -->
+    <header class="header-bg text-white py-8">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl font-bold mb-4">Pythagoras' Theorem</h1>
+            <p class="text-xl">Interactive Learning Guide</p>
+        </div>
+    </header>
+
+    <!-- Introduction Section -->
+    <section class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4">Introduction</h2>
+            <p class="mb-4">
+                Pythagoras' theorem is one of the most fundamental concepts in mathematics, with applications ranging from basic 
+                geometry to advanced engineering. Named after the Greek mathematician Pythagoras, this theorem establishes the 
+                relationship between the sides of a right triangle.
+            </p>
+            <div class="theorem-box p-4 bg-blue-50 rounded-md mb-4">
+                <h3 class="font-bold text-xl mb-2">The Theorem</h3>
+                <p>In a right triangle, the square of the length of the hypotenuse equals the sum of the squares of the lengths of the other two sides.</p>
+                <div class="text-center text-xl py-2">
+                    <span class="font-mono">\(AB^2 + AC^2 = BC^2\)</span>
+                </div>
+                <p class="text-sm text-gray-600">where \(AB\) and \(AC\) are the lengths of the legs (the sides adjacent to the right angle), and \(BC\) is the length of the hypotenuse (the side opposite to the right angle).</p>
+            </div>
+            
+            <div class="sketch-notice">
+                <i class="fas fa-exclamation-triangle mr-2 text-yellow-600"></i> IMPORTANT: A SKETCH SHOULD ALWAYS BE MADE when solving problems with Pythagoras' theorem!
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="md:w-1/2">
+                    <h3 class="font-bold text-lg mb-2">Real-World Application</h3>
+                    <p>
+                        Consider the Fløibanen funicular in Bergen, Norway. It travels from a height of 18 meters to 320 meters, 
+                        covering a horizontal distance of 795 meters. Using Pythagoras' theorem, we can calculate the actual length 
+                        of the funicular track.
+                    </p>
+                </div>
+                <div class="md:w-1/2">
+                    <div class="bg-gray-100 p-4 rounded-md">
+                        <h4 class="font-semibold mb-2">Calculation:</h4>
+                        <p>\(Height\ difference = 320m - 18m = 302m\)</p>
+                        <p>\(Horizontal\ distance = 795m\)</p>
+                        <p>\(Actual\ length = \sqrt{302^2 + 795^2} = \sqrt{91204 + 632025} = \sqrt{723229} \approx 850.4m\)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Objectives Navigation -->
+    <section class="container mx-auto px-4 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-4">Learning Objectives</h2>
+            <p class="mb-4">This learning guide covers the following key objectives:</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <a href="#objective1" class="card bg-blue-100 p-4 rounded-lg hover:bg-blue-200 flex items-center">
+                    <div class="mr-3 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center">1</div>
+                    <div>
+                        <h3 class="font-bold">Calculate Lengths</h3>
+                        <p class="text-sm">Using Pythagoras' Theorem</p>
+                    </div>
+                </a>
+                
+                <a href="#objective2" class="card bg-green-100 p-4 rounded-lg hover:bg-green-200 flex items-center">
+                    <div class="mr-3 bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center">2</div>
+                    <div>
+                        <h3 class="font-bold">Check Rectangular Triangles</h3>
+                        <p class="text-sm">Verify if a triangle is rectangular</p>
+                    </div>
+                </a>
+                
+                <a href="#objective3" class="card bg-yellow-100 p-4 rounded-lg hover:bg-yellow-200 flex items-center">
+                    <div class="mr-3 bg-yellow-500 text-white rounded-full w-8 h-8 flex items-center justify-center">3</div>
+                    <div>
+                        <h3 class="font-bold">Triangle Sketches</h3>
+                        <p class="text-sm">Guidelines for drawing triangles</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Objective 1: Calculate Lengths -->
+    <section id="objective1" class="container mx-auto px-4 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center mb-4">
+                <div class="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">1</div>
+                <h2 class="text-2xl font-bold">Calculate Lengths</h2>
+            </div>
+            
+            <p class="mb-6">
+                One of the most common applications of Pythagoras' Theorem is calculating the unknown length of a side in a right triangle. 
+                Follow this systematic approach to solve such problems effectively.
+            </p>
+            
+            <div class="sketch-notice">
+                <i class="fas fa-pencil-alt mr-2 text-yellow-600"></i> ALWAYS MAKE A SKETCH! Creating a proper sketch is the first and most crucial step in applying Pythagoras' theorem.
+            </div>
+            
+            <div class="mb-8">
+                <h3 class="text-xl font-bold mb-4">Steps to Calculate Lengths:</h3>
+                
+                <div class="step-highlight p-3 mb-4">
+                    <h4 class="font-bold">Step 1: Sketch a right triangle</h4>
+                    <p>Draw a right triangle, label the vertices as A, B, and C, and add the known lengths. Ensure you're using consistent units for all measurements.</p>
+                </div>
+                
+                <div class="step-highlight p-3 mb-4">
+                    <h4 class="font-bold">Step 2: Write the Pythagorean theorem in letters only</h4>
+                    <p>Express the relationship using the vertices: \(AB^2 + AC^2 = BC^2\) where \(BC\) is the hypotenuse.</p>
+                </div>
+                
+                <div class="step-highlight p-3 mb-4">
+                    <h4 class="font-bold">Step 3: Replace the letters with known values</h4>
+                    <p>Substitute the known values into the formula, leaving any unknown values as variables.</p>
+                </div>
+                
+                <div class="step-highlight p-3 mb-4">
+                    <h4 class="font-bold">Step 4: Solve using the Balance Method</h4>
+                    <p>Use algebraic manipulation to isolate the unknown value, taking the square root as needed.</p>
+                </div>
+                
+                <p class="text-sm text-gray-600 italic">
+                    Note: You may skip step 1 if the assignment already provides a correct drawing with both letters and numbers, such as in assignment 11.
+                </p>
+            </div>
+            
+            <!-- Interactive Pythagoras Calculator -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold mb-4">Interactive Triangle Calculator</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="canvas-container">
+                        <canvas id="triangleCanvas" width="400" height="300" class="w-full h-full"></canvas>
+                    </div>
+                    
+                    <div class="bg-gray-100 p-4 rounded-md">
+                        <h4 class="font-bold mb-3">Triangle Calculator</h4>
+                        
+                        <div class="mb-4">
+                            <label class="block mb-1">Side AB:</label>
+                            <input type="number" id="sideA" min="1" max="10" value="4" class="w-full p-2 border rounded" oninput="updateTriangle()">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block mb-1">Side AC:</label>
+                            <input type="number" id="sideB" min="1" max="10" value="3" class="w-full p-2 border rounded" oninput="updateTriangle()">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block mb-1">Hypotenuse (BC):</label>
+                            <div id="hypotenuseValue" class="w-full p-2 bg-white border rounded">5</div>
+                        </div>
+                        
+                        <div class="mb-2">
+                            <h5 class="font-bold">Calculation:</h5>
+                            <div id="calculation" class="p-2 bg-white border rounded font-mono text-sm">
+                                AB² + AC² = BC²<br>
+                                4² + 3² = BC²<br>
+                                16 + 9 = BC²<br>
+                                25 = BC²<br>
+                                BC = √25 = 5
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Example Calculation -->
+            <div class="example-box p-4 bg-yellow-50 rounded-md mb-6">
+                <h3 class="font-bold text-lg mb-2">Example Problem</h3>
+                <p>A ladder is leaning against a wall. The foot of the ladder is 3 meters from the wall, and the ladder reaches a height of 4 meters on the wall. What is the length of the ladder?</p>
+                
+                <div class="mt-4">
+                    <button onclick="toggleSolution('example1')" class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded">
+                        <span id="example1Btn">Show Solution</span>
+                    </button>
+                    
+                    <div id="example1Solution" class="hidden mt-3 p-3 bg-white rounded-md">
+                        <h4 class="font-bold">Solution:</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p><strong>Step 1:</strong> Sketch the right triangle</p>
+                                <p>- Let's label vertices as A, B, and C</p>
+                                <p>- The distance from the wall (AB) = 3 meters</p>
+                                <p>- The height up the wall (AC) = 4 meters</p>
+                                <p>- The length of the ladder (BC) = ?</p>
+                                <div class="mt-2 border p-2 bg-gray-50 rounded">
+                                    <svg width="200" height="150" viewBox="0 0 200 150">
+                                        <line x1="50" y1="120" x2="150" y2="120" stroke="black" stroke-width="2"/>
+                                        <line x1="50" y1="120" x2="50" y2="20" stroke="black" stroke-width="2"/>
+                                        <line x1="50" y1="20" x2="150" y2="120" stroke="black" stroke-width="2" stroke-dasharray="5,5"/>
+                                        <text x="45" y="135" class="vertex-label">A</text>
+                                        <text x="155" y="135" class="vertex-label">B</text>
+                                        <text x="45" y="15" class="vertex-label">C</text>
+                                        <text x="95" y="138" font-size="12">AB = 3m</text>
+                                        <text x="25" y="70" font-size="12">AC = 4m</text>
+                                        <text x="95" y="70" font-size="12" style="font-style: italic;">BC = ?</text>
+                                        <path d="M 70 120 L 70 100 L 50 100" fill="none" stroke="black" stroke-width="1"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div>
+                                <p><strong>Step 2:</strong> Write the Pythagorean theorem</p>
+                                <p>AB² + AC² = BC²</p>
+                                
+                                <p><strong>Step 3:</strong> Replace with known values</p>
+                                <p>3² + 4² = BC²</p>
+                                <p>9 + 16 = BC²</p>
+                                <p>25 = BC²</p>
+                                
+                                <p><strong>Step 4:</strong> Solve for BC</p>
+                                <p>BC = √25 = 5</p>
+                                
+                                <p><strong>Answer:</strong> The ladder is 5 meters long.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Practice Problems -->
+            <div class="mb-4">
+                <h3 class="text-xl font-bold mb-4">Practice Problems</h3>
+                
+                <div class="practice-problem p-4 mb-4">
+                    <h4 class="font-bold">Problem 1:</h4>
+                    <p>A right triangle has one leg of length 7 cm and a hypotenuse of length 25 cm. Find the length of the other leg.</p>
+                    
+                    <div class="mt-3">
+                        <button onclick="toggleSolution('practice1')" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded">
+                            <span id="practice1Btn">Show Solution</span>
+                        </button>
+                        
+                        <div id="practice1Solution" class="hidden mt-3 p-3 bg-gray-100 rounded-md">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p><strong>Step 1:</strong> Sketch the right triangle</p>
+                                    <div class="mt-2 border p-2 bg-white rounded">
+                                        <svg width="200" height="150" viewBox="0 0 200 150">
+                                            <line x1="50" y1="120" x2="150" y2="120" stroke="black" stroke-width="2"/>
+                                            <line x1="50" y1="120" x2="50" y2="40" stroke="black" stroke-width="2"/>
+                                            <line x1="50" y1="40" x2="150" y2="120" stroke="black" stroke-width="2" stroke-dasharray="5,5"/>
+                                            <text x="45" y="135" class="vertex-label">A</text>
+                                            <text x="155" y="135" class="vertex-label">B</text>
+                                            <text x="45" y="35" class="vertex-label">C</text>
+                                            <text x="95" y="138" font-size="12">AB = 7cm</text>
+                                            <text x="25" y="80" font-size="12">AC = ?</text>
+                                            <text x="95" y="70" font-size="12">BC = 25cm</text>
+                                            <path d="M 70 120 L 70 100 L 50 100" fill="none" stroke="black" stroke-width="1"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p><strong>Step 2:</strong> Write the Pythagorean theorem</p>
+                                    <p>AB² + AC² = BC²</p>
+                                    
+                                    <p><strong>Step 3:</strong> Replace with known values</p>
+                                    <p>7² + AC² = 25²</p>
+                                    <p>49 + AC² = 625</p>
+                                    <p>AC² = 625 - 49 = 576</p>
+                                    
+                                    <p><strong>Step 4:</strong> Solve for AC</p>
+                                    <p>AC = √576 = 24 cm</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="practice-problem p-4">
+                    <h4 class="font-bold">Problem 2:</h4>
+                    <p>A right triangle has legs of lengths 5 units and 12 units. What is the length of the hypotenuse?</p>
+                    
+                    <div class="mt-3">
+                        <button onclick="toggleSolution('practice2')" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded">
+                            <span id="practice2Btn">Show Solution</span>
+                        </button>
+                        
+                        <div id="practice2Solution" class="hidden mt-3 p-3 bg-gray-100 rounded-md">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p><strong>Step 1:</strong> Sketch the right triangle</p>
+                                    <div class="mt-2 border p-2 bg-white rounded">
+                                        <svg width="200" height="150" viewBox="0 0 200 150">
+                                            <line x1="50" y1="120" x2="170" y2="120" stroke="black" stroke-width="2"/>
+                                            <line x1="50" y1="120" x2="50" y2="50" stroke="black" stroke-width="2"/>
+                                            <line x1="50" y1="50" x2="170" y2="120" stroke="black" stroke-width="2" stroke-dasharray="5,5"/>
+                                            <text x="45" y="135" class="vertex-label">A</text>
+                                            <text x="175" y="135" class="vertex-label">B</text>
+                                            <text x="45" y="45" class="vertex-label">C</text>
+                                            <text x="105" y="138" font-size="12">AB = 12 units</text>
+                                            <text x="25" y="85" font-size="12">AC = 5 units</text>
+                                            <text x="105" y="80" font-size="12">BC = ?</text>
+                                            <path d="M 70 120 L 70 100 L 50 100" fill="none" stroke="black" stroke-width="1"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p><strong>Step 2:</strong> Write the Pythagorean theorem</p>
+                                    <p>AB² + AC² = BC²</p>
+                                    
+                                    <p><strong>Step 3:</strong> Replace with known values</p>
+                                    <p>12² + 5² = BC²</p>
+                                    <p>144 + 25 = BC²</p>
+                                    <p>169 = BC²</p>
+                                    
+                                    <p><strong>Step 4:</strong> Solve for BC</p>
+                                    <p>BC = √169 = 13 units</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Objective 2: Check Rectangular Triangles -->
+    <section id="objective2" class="container mx-auto px-4 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center mb-4">
+                <div class="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">2</div>
+                <h2 class="text-2xl font-bold">Check If A Triangle Is Rectangular</h2>
+            </div>
+            
+            <p class="mb-6">
+                The Pythagorean theorem can also be used to determine whether a triangle is a right triangle (rectangular). 
+                If the sum of the squares of two sides equals the square of the third side, the triangle contains a right angle.
+            </p>
+            
+            <div class="sketch-notice">
+                <i class="fas fa-pencil-alt mr-2 text-yellow-600"></i> ALWAYS MAKE A SKETCH! When checking if a triangle is rectangular, start by drawing the triangle with clearly labeled vertices.
+            </div>
+            
+            <div class="mb-8">
+                <h3 class="text-xl font-bold mb-4">Steps to Check If a Triangle is Rectangular:</h3>
+                
+                <div class="step-highlight p-3 mb-4">
+                    <h4 class="font-bold">Step 1: Sketch the triangle</h4>
+                    <p>Draw the triangle, label the vertices as A, B, and C, and add the known lengths. Ensure you're using consistent units.</p>
+                </div>
+                
+                <div class="step-highlight p-3 mb-4">
+                    <h4 class="font-bold">Step 2a: Apply the Pythagorean theorem to the sides</h4>
+                    <p>Write down the Pythagorean theorem using letters (AB² + AC² = BC²), then substitute the actual values and calculate.</p>
+                </div>
+                
+                <div class="step-highlight p-3 mb-4">
+                    <h4 class="font-bold">Step 2b: Apply the Pythagorean theorem to the hypotenuse</h4>
+                    <p>Identify the longest side as a potential hypotenuse, then check if AB² + AC² = BC².</p>
+                </div>
+                
+                <div class="step-highlight p-3 mb-4">
+                    <h4 class="font-bold">Step 3: Write your conclusion</h4>
+                    <p>State whether the triangle is rectangular (right-angled) or not, using a ✓ symbol if it is.</p>
+                </div>
+                
+                <div class="bg-gray-100 p-4 rounded-md mb-6">
+                    <h4 class="font-bold">Difference between study objectives 1 and 2:</h4>
+                    <p class="mb-2">For objective 1 (page 57), we use the theorem to find an unknown side: <span class="font-mono">AB² + AC² = BC²</span></p>
+                    <p class="mb-2">For example: 4² + AC² = 5², so we solve for AC.</p>
+                    
+                    <p class="mb-2">For objective 2 (page 65), we verify if a triangle is rectangular by checking whether the equation holds true:</p>
+                    <p>AB² + AC² = 3² + 4² = 9 + 16 = 25 and BC² = 5² = 25</p>
+                    <p>Since 25 = 25, the triangle is rectangular (contains a right angle).</p>
+                </div>
+            </div>
+            
+            <!-- Interactive Rectangular Triangle Checker -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold mb-4">Interactive Triangle Checker</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="canvas-container">
+                        <canvas id="rectangle-checker-canvas" width="400" height="300" class="w-full h-full"></canvas>
+                    </div>
+                    
+                    <div class="bg-gray-100 p-4 rounded-md">
+                        <h4 class="font-bold mb-3">Is this triangle rectangular?</h4>
+                        
+                        <div class="mb-4">
+                            <label class="block mb-1">Side AB:</label>
+                            <input type="number" id="checkSideA" min="1" max="20" value="3" class="w-full p-2 border rounded" oninput="updateCheckerTriangle()">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block mb-1">Side AC:</label>
+                            <input type="number" id="checkSideB" min="1" max="20" value="4" class="w-full p-2 border rounded" oninput="updateCheckerTriangle()">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block mb-1">Side BC (longest):</label>
+                            <input type="number" id="checkSideC" min="1" max="20" value="5" class="w-full p-2 border rounded" oninput="updateCheckerTriangle()">
+                        </div>
+                        
+                        <div class="mb-2">
+                            <h5 class="font-bold">Verification:</h5>
+                            <div id="verificationResult" class="p-2 bg-white border rounded font-mono text-sm">
+                                AB² + AC² = 3² + 4² = 9 + 16 = 25<br>
+                                BC² = 5² = 25<br>
+                                Since AB² + AC² = BC², this triangle is rectangular ✓
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Example Problem -->
+            <div class="example-box p-4 bg-yellow-50 rounded-md mb-6">
+                <h3 class="font-bold text-lg mb-2">Example Problem</h3>
+                <p>Determine whether a triangle with sides of lengths 7, 24, and 25 is a right triangle.</p>
+                
+                <div class="mt-4">
+                    <button onclick="toggleSolution('example2')" class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded">
+                        <span id="example2Btn">Show Solution</span>
+                    </button>
+                    
+                    <div id="example2Solution" class="hidden mt-3 p-3 bg-white rounded-md">
+                        <h4 class="font-bold">Solution:</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p><strong>Step 1:</strong> Sketch the triangle and label vertices</p>
+                                <div class="mt-2 border p-2 bg-gray-50 rounded">
+                                    <svg width="220" height="150" viewBox="0 0 220 150">
+                                        <line x1="50" y1="120" x2="170" y2="120" stroke="black" stroke-width="2"/>
+                                        <line x1="50" y1="120" x2="50" y2="30" stroke="black" stroke-width="2"/>
+                                        <line x1="50" y1="30" x2="170" y2="120" stroke="black" stroke-width="2"/>
+                                        <text x="45" y="135" class="vertex-label">A</text>
+                                        <text x="175" y="135" class="vertex-label">B</text>
+                                        <text x="45" y="25" class="vertex-label">C</text>
+                                        <text x="105" y="138" font-size="12">AB = 24</text>
+                                        <text x="30" y="75" font-size="12">AC = 7</text>
+                                        <text x="105" y="70" font-size="12">BC = 25</text>
+                                        <path d="M 70 120 L 70 100 L 50 100" fill="none" stroke="black" stroke-width="1"/>
+                                    </svg>
+                                </div>
+                                <p class="mt-2"><strong>Step 2:</strong> Identify the longest side as the potential hypotenuse.</p>
+                                <p>BC = 25 is the longest side, so it's our potential hypotenuse.</p>
+                            </div>
+                            <div>
+                                <p><strong>Step 2:</strong> Apply the Pythagorean theorem.</p>
+                                <p>For a right triangle: AB² + AC² = BC²</p>
+                                <p>Check if 24² + 7² = 25²</p>
+                                <p>24² + 7² = 576 + 49 = 625</p>
+                                <p>25² = 625</p>
+                                
+                                <p><strong>Step 3:</strong> Draw a conclusion.</p>
+                                <p>Since AB² + AC² = BC², this triangle is rectangular ✓</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Practice Problems -->
+            <div class="mb-4">
+                <h3 class="text-xl font-bold mb-4">Practice Problems</h3>
+                
+                <div class="practice-problem p-4 mb-4">
+                    <h4 class="font-bold">Problem 1:</h4>
+                    <p>Is a triangle with sides of lengths 8, 15, and 17 a right triangle?</p>
+                    
+                    <div class="mt-3">
+                        <button onclick="toggleSolution('practice3')" class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded">
+                            <span id="practice3Btn">Show Solution</span>
+                        </button>
+                        
+                        <div id="practice3Solution" class="hidden mt-3 p-3 bg-gray-100 rounded-md">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p><strong>Step 1:</strong> Sketch the triangle and label vertices</p>
+                                    <div class="mt-2 border p-2 bg-white rounded">
+                                        <svg width="220" height="150" viewBox="0 0 220 150">
+                                            <line x1="50" y1="120" x2="170" y2="120" stroke="black" stroke-width="2"/>
+                                            <line x1="50" y1="120" x2="50" y2="30" stroke="black" stroke-width="2"/>
+                                            <line x1="50" y1="30" x2="170" y2="120" stroke="black" stroke-width="2"/>
+                                            <text x="45" y="135" class="vertex-label">A</text>
+                                            <text x="175" y="135" class="vertex-label">B</text>
+                                            <text x="45" y="25" class="vertex-label">C</text>
+                                            <text x="105" y="138" font-size="12">AB = 15</text>
+                                            <text x="30" y="75" font-size="12">AC = 8</text>
+                                            <text x="105" y="70" font-size="12">BC = 17</text>
+                                            <path d="M 70 120 L 70 100 L 50 100" fill="none" stroke="black" stroke-width="1"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p><strong>Step 2:</strong> Apply the Pythagorean theorem</p>
+                                    <p>Check if AB² + AC² = BC²</p>
+                                    <p>15² + 8² = 225 + 64 = 289</p>
+                                    <p>17² = 289</p>
+                                    
+                                    <p><strong>Step 3:</strong> Draw a conclusion</p>
+                                    <p>Since AB² + AC² = BC², this is a right triangle ✓</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="practice-problem p-4">
+                    <h4 class="font-bold">Problem 2:</h4>
+                    <p>Is a triangle with sides of lengths 6, 8, and 10 a right triangle?</p>
+                    
+                    <div class="mt-3">
+                        <button onclick="toggleSolution('practice4')" class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded">
+                            <span id="practice4Btn">Show Solution</span>
+                        </button>
+                        
+                        <div id="practice4Solution" class="hidden mt-3 p-3 bg-gray-100 rounded-md">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p><strong>Step 1:</strong> Sketch the triangle and label vertices</p>
+                                    <div class="mt-2 border p-2 bg-white rounded">
+                                        <svg width="220" height="150" viewBox="0 0 220 150">
+                                            <line x1="50" y1="120" x2="130" y2="120" stroke="black" stroke-width="2"/>
+                                            <line x1="50" y1="120" x2="50" y2="60" stroke="black" stroke-width="2"/>
+                                            <line x1="50" y1="60" x2="130" y2="120" stroke="black" stroke-width="2"/>
+                                            <text x="45" y="135" class="vertex-label">A</text>
+                                            <text x="135" y="135" class="vertex-label">B</text>
+                                            <text x="45" y="55" class="vertex-label">C</text>
+                                            <text x="85" y="138" font-size="12">AB = 8</text>
+                                            <text x="30" y="90" font-size="12">AC = 6</text>
+                                            <text x="85" y="85" font-size="12">BC = 10</text>
+                                            <path d="M 70 120 L 70 100 L 50 100" fill="none" stroke="black" stroke-width="1"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p><strong>Step 2:</strong> Apply the Pythagorean theorem</p>
+                                    <p>Check if AB² + AC² = BC²</p>
+                                    <p>8² + 6² = 64 + 36 = 100</p>
+                                    <p>10² = 100</p>
+                                    
+                                    <p><strong>Step 3:</strong> Draw a conclusion</p>
+                                    <p>Since AB² + AC² = BC², this is a right triangle ✓</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="practice-problem p-4">
+                    <h4 class="font-bold">Problem 3:</h4>
+                    <p>Is a triangle with sides of lengths 5, 6, and 7 a right triangle?</p>
+                    
+                    <div class="mt-3">
+                        <button onclick="toggleSolution('practice5')" class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded">
+                            <span id="practice5Btn">Show Solution</span>
+                        </button>
+                        
+                        <div id="practice5Solution" class="hidden mt-3 p-3 bg-gray-100 rounded-md">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p><strong>Step 1:</strong> Sketch the triangle and label vertices</p>
+                                    <div class="mt-2 border p-2 bg-white rounded">
+                                        <svg width="220" height="150" viewBox="0 0 220 150">
+                                            <line x1="60" y1="120" x2="160" y2="120" stroke="black" stroke-width="2"/>
+                                            <line x1="60" y1="120" x2="110" y2="40" stroke="black" stroke-width="2"/>
+                                            <line x1="110" y1="40" x2="160" y2="120" stroke="black" stroke-width="2"/>
+                                            <text x="55" y="135" class="vertex-label">A</text>
+                                            <text x="165" y="135" class="vertex-label">B</text>
+                                            <text x="110" y="35" class="vertex-label">C</text>
+                                            <text x="105" y="138" font-size="12">AB = 6</text>
+                                            <text x="75" y="80" font-size="12">AC = 5</text>
+                                            <text x="130" y="80" font-size="12">BC = 7</text>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p><strong>Step 2:</strong> Apply the Pythagorean theorem</p>
+                                    <p>Check if AB² + AC² = BC² (with BC as the longest side)</p>
+                                    <p>6² + 5² = 36 + 25 = 61</p>
+                                    <p>7² = 49</p>
+                                    
+                                    <p><strong>Step 3:</strong> Draw a conclusion</p>
+                                    <p>Since AB² + AC² ≠ BC², this is NOT a right triangle ✗</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Objective 3: Triangle Sketches -->
+    <section id="objective3" class="container mx-auto px-4 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center mb-4">
+                <div class="bg-yellow-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">3</div>
+                <h2 class="text-2xl font-bold">Triangle Sketches</h2>
+            </div>
+            
+            <p class="mb-6">
+                Proper sketching of triangles is essential for visualizing and solving problems involving Pythagoras' theorem. 
+                This section covers guidelines for creating effective sketches in both 2D and 3D contexts.
+            </p>
+            
+            <div class="sketch-notice">
+                <i class="fas fa-pencil-alt mr-2 text-yellow-600"></i> ALWAYS MAKE A SKETCH! Sketching is absolutely essential when solving geometric problems, especially in 3D situations.
+            </div>
+            
+            <div class="mb-8">
+                <h3 class="text-xl font-bold mb-4">Key Sketching Guidelines:</h3>
+                
+                <div class="step-highlight p-3 mb-4">
+                    <h4 class="font-bold">Guideline 1: Add a guideline if there is no right angle (page 67)</h4>
+                    <p>When drawing a triangle without a right angle, include auxiliary lines to form right triangles where Pythagoras' theorem can be applied.</p>
+                </div>
+                
+                <div class="step-highlight p-3 mb-4">
+                    <h4 class="font-bold">Guideline 2: ALWAYS use a 2D sketch in a 3D situation (page 74)</h4>
+                    <p>When dealing with three-dimensional problems, create a two-dimensional sketch that accurately represents the relationship you need to analyze.</p>
+                </div>
+            </div>
+            
+            <!-- Interactive Sketching Demo -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold mb-4">Interactive Sketching Demonstrations</h3>
+                
+                <div class="mb-6">
+                    <h4 class="font-semibold mb-3">Adding Guidelines to Non-Right Triangles</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <div class="border p-3 bg-white rounded">
+                                <svg width="220" height="180" viewBox="0 0 220 180">
+                                    <!-- Original triangle -->
+                                    <line x1="40" y1="150" x2="200" y2="150" stroke="black" stroke-width="2"/>
+                                    <line x1="40" y1="150" x2="120" y2="30" stroke="black" stroke-width="2"/>
+                                    <line x1="120" y1="30" x2="200" y2="150" stroke="black" stroke-width="2"/>
+                                    
+                                    <!-- Height line (guideline) -->
+                                    <line x1="120" y1="30" x2="120" y2="150" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,3"/>
+                                    
+                                    <!-- Labels -->
+                                    <text x="35" y="165" class="vertex-label">A</text>
+                                    <text x="205" y="165" class="vertex-label">B</text>
+                                    <text x="120" y="25" class="vertex-label">C</text>
+                                    <text x="115" y="95" fill="#3b82f6" font-weight="bold">h</text>
+                                    
+                                    <!-- Right angle symbol -->
+                                    <path d="M 130 150 L 130 140 L 120 140" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="bg-gray-100 p-4 rounded-md">
+                            <p class="mb-2">In this example, we have a triangle without a right angle. To apply Pythagoras' theorem:</p>
+                            <ol class="list-decimal ml-5 mb-4">
+                                <li>Draw a height line from vertex C to the opposite side AB</li>
+                                <li>This creates two right triangles: ACD and BCD</li>
+                                <li>Now Pythagoras' theorem can be applied to each of these right triangles</li>
+                            </ol>
+                            <p>This technique allows us to solve problems involving non-right triangles by decomposing them into right triangles.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h4 class="font-semibold mb-3">2D Sketches in 3D Situations</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="visualization-3d h-60 bg-gray-200 rounded flex items-center justify-center p-3">
+                            <div class="triangle-3d">
+                                <svg width="220" height="200" viewBox="0 0 220 200">
+                                    <!-- Cube outline -->
+                                    <polygon points="50,150 150,150 150,50 50,50" fill="none" stroke="#ccc" stroke-width="1"/>
+                                    <polygon points="80,120 180,120 180,20 80,20" fill="none" stroke="#ccc" stroke-width="1"/>
+                                    <line x1="50" y1="150" x2="80" y2="120" stroke="#ccc" stroke-width="1"/>
+                                    <line x1="150" y1="150" x2="180" y2="120" stroke="#ccc" stroke-width="1"/>
+                                    <line x1="150" y1="50" x2="180" y2="20" stroke="#ccc" stroke-width="1"/>
+                                    <line x1="50" y1="50" x2="80" y2="20" stroke="#ccc" stroke-width="1"/>
+                                    
+                                    <!-- Diagonal being calculated -->
+                                    <line x1="50" y1="150" x2="180" y2="20" stroke="#3b82f6" stroke-width="2"/>
+                                    
+                                    <!-- Labels -->
+                                    <text x="40" y="165" class="vertex-label">A</text>
+                                    <text x="185" y="20" class="vertex-label">B</text>
+                                    <text x="110" y="90" fill="#3b82f6" font-weight="bold">Body Diagonal</text>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="bg-gray-100 p-4 rounded-md">
+                            <p class="mb-2">When dealing with 3D objects (like cubes, pyramids, etc.), follow these steps:</p>
+                            <ol class="list-decimal ml-5 mb-4">
+                                <li>Identify the specific distances you need to find (like the body diagonal AB in this cube)</li>
+                                <li>Draw a 2D representation that shows those distances clearly</li>
+                                <li>Label all relevant points using capital letters (A, B, C, etc.)</li>
+                                <li>Apply Pythagoras' theorem to the resulting right triangles</li>
+                            </ol>
+                            <p>This approach simplifies complex 3D problems by isolating the specific triangles needed for calculation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Example Problem -->
+            <div class="example-box p-4 bg-yellow-50 rounded-md mb-6">
+                <h3 class="font-bold text-lg mb-2">Example Problem: 3D Application</h3>
+                <p>Find the distance from one corner of a cube with side length 5 cm to the opposite corner (the body diagonal).</p>
+                
+                <div class="mt-4">
+                    <button onclick="toggleSolution('example3')" class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded">
+                        <span id="example3Btn">Show Solution</span>
+                    </button>
+                    
+                    <div id="example3Solution" class="hidden mt-3 p-3 bg-white rounded-md">
+                        <h4 class="font-bold">Solution:</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p><strong>Step 1:</strong> Create a 2D representation of the problem</p>
+                                <div class="mt-2 border p-2 bg-gray-50 rounded">
+                                    <svg width="220" height="220" viewBox="0 0 220 220">
+                                        <!-- Cube outline -->
+                                        <polygon points="50,170 150,170 150,70 50,70" fill="none" stroke="#777" stroke-width="1"/>
+                                        <polygon points="80,140 180,140 180,40 80,40" fill="none" stroke="#777" stroke-width="1"/>
+                                        <line x1="50" y1="170" x2="80" y2="140" stroke="#777" stroke-width="1"/>
+                                        <line x1="150" y1="170" x2="180" y2="140" stroke="#777" stroke-width="1"/>
+                                        <line x1="150" y1="70" x2="180" y2="40" stroke="#777" stroke-width="1"/>
+                                        <line x1="50" y1="70" x2="80" y2="40" stroke="#777" stroke-width="1"/>
+                                        
+                                        <!-- Face diagonal first -->
+                                        <line x1="50" y1="170" x2="150" y2="70" stroke="green" stroke-width="2"/>
+                                        
+                                        <!-- Body diagonal -->
+                                        <line x1="50" y1="170" x2="180" y2="40" stroke="#3b82f6" stroke-width="2.5"/>
+                                        
+                                        <!-- Labels -->
+                                        <text x="40" y="185" class="vertex-label">A</text>
+                                        <text x="185" y="40" class="vertex-label">B</text>
+                                        <text x="155" y="70" class="vertex-label">C</text>
+                                        <text x="90" y="130" fill="green" font-weight="bold" font-size="12">Face Diagonal</text>
+                                        <text x="110" y="100" fill="#3b82f6" font-weight="bold" font-size="12">Body Diagonal</text>
+                                        <text x="60" y="175" font-size="10">5 cm</text>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div>
+                                <p><strong>Step 1:</strong> Find the face diagonal using Pythagoras</p>
+                                <p>Label the corners of interest as A, B, and intermediate point C</p>
+                                <p>For face diagonal AC:</p>
+                                <p>AC² = 5² + 5² = 25 + 25 = 50</p>
+                                <p>AC = √50 = 5√2 cm</p>
+                                
+                                <p><strong>Step 2:</strong> Now use the face diagonal to find body diagonal</p>
+                                <p>The body diagonal AB can be found using:</p>
+                                <p>AB² = AC² + 5²</p>
+                                <p>AB² = (5√2)² + 5²</p>
+                                <p>AB² = 50 + 25 = 75</p>
+                                <p>AB = √75 = 5√3 cm ≈ 8.66 cm</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Practice Problems -->
+            <div class="mb-4">
+                <h3 class="text-xl font-bold mb-4">Practice Problems</h3>
+                
+                <div class="practice-problem p-4 mb-4">
+                    <h4 class="font-bold">Problem 1:</h4>
+                    <p>In an equilateral triangle with side length 10 cm, find the height of the triangle.</p>
+                    
+                    <div class="mt-3">
+                        <button onclick="toggleSolution('practice6')" class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded">
+                            <span id="practice6Btn">Show Solution</span>
+                        </button>
+                        
+                        <div id="practice6Solution" class="hidden mt-3 p-3 bg-gray-100 rounded-md">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p><strong>Step 1:</strong> Draw the equilateral triangle with a height line</p>
+                                    <div class="mt-2 border p-2 bg-white rounded">
+                                        <svg width="220" height="180" viewBox="0 0 220 180">
+                                            <!-- Equilateral triangle -->
+                                            <line x1="30" y1="150" x2="190" y2="150" stroke="black" stroke-width="2"/>
+                                            <line x1="30" y1="150" x2="110" y2="30" stroke="black" stroke-width="2"/>
+                                            <line x1="110" y1="30" x2="190" y2="150" stroke="black" stroke-width="2"/>
+                                            
+                                            <!-- Height line -->
+                                            <line x1="110" y1="30" x2="110" y2="150" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,3"/>
+                                            
+                                            <!-- Labels -->
+                                            <text x="25" y="165" class="vertex-label">A</text>
+                                            <text x="195" y="165" class="vertex-label">B</text>
+                                            <text x="110" y="25" class="vertex-label">C</text>
+                                            <text x="115" y="95" fill="#3b82f6" font-weight="bold">h</text>
+                                            <text x="100" y="165" font-size="10">5 cm</text>
+                                            <text x="150" y="90" font-size="10">10 cm</text>
+                                            <text x="60" y="90" font-size="10">10 cm</text>
+                                            
+                                            <!-- Right angle symbol -->
+                                            <path d="M 120 150 L 120 140 L 110 140" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p><strong>Step 2:</strong> Apply Pythagoras' theorem to the right triangle</p>
+                                    <p>This creates a right triangle with:</p>
+                                    <p>- Hypotenuse = 10 cm (side of the equilateral triangle)</p>
+                                    <p>- Base = 5 cm (half of the side AB)</p>
+                                    <p>- Height = h (what we're solving for)</p>
+                                    
+                                    <p><strong>Step 3:</strong> Apply Pythagoras' theorem</p>
+                                    <p>h² + 5² = 10²</p>
+                                    <p>h² + 25 = 100</p>
+                                    <p>h² = 75</p>
+                                    <p>h = √75 = 5√3 ≈ 8.66 cm</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="practice-problem p-4">
+                    <h4 class="font-bold">Problem 2:</h4>
+                    <p>Find the distance from one corner of a rectangular box with dimensions 3 cm × 4 cm × 5 cm to the opposite corner.</p>
+                    
+                    <div class="mt-3">
+                        <button onclick="toggleSolution('practice7')" class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded">
+                            <span id="practice7Btn">Show Solution</span>
+                        </button>
+                        
+                        <div id="practice7Solution" class="hidden mt-3 p-3 bg-gray-100 rounded-md">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p><strong>Step 1:</strong> Draw a 2D representation of the box and diagonal</p>
+                                    <div class="mt-2 border p-2 bg-white rounded">
+                                        <svg width="220" height="200" viewBox="0 0 220 200">
+                                            <!-- Box outline -->
+                                            <polygon points="40,160 130,160 130,100 40,100" fill="none" stroke="#777" stroke-width="1"/>
+                                            <polygon points="70,130 160,130 160,70 70,70" fill="none" stroke="#777" stroke-width="1"/>
+                                            <line x1="40" y1="160" x2="70" y2="130" stroke="#777" stroke-width="1"/>
+                                            <line x1="130" y1="160" x2="160" y2="130" stroke="#777" stroke-width="1"/>
+                                            <line x1="130" y1="100" x2="160" y2="70" stroke="#777" stroke-width="1"/>
+                                            <line x1="40" y1="100" x2="70" y2="70" stroke="#777" stroke-width="1"/>
+                                            
+                                            <!-- Face diagonal first -->
+                                            <line x1="40" y1="160" x2="130" y2="100" stroke="green" stroke-width="2"/>
+                                            
+                                            <!-- Body diagonal -->
+                                            <line x1="40" y1="160" x2="160" y2="70" stroke="#3b82f6" stroke-width="2.5"/>
+                                            
+                                            <!-- Labels -->
+                                            <text x="35" y="175" class="vertex-label">A</text>
+                                            <text x="165" y="70" class="vertex-label">B</text>
+                                            <text x="135" y="100" class="vertex-label">C</text>
+                                            <text x="75" y="145" font-size="10">3 cm</text>
+                                            <text x="40" y="125" font-size="10">4 cm</text>
+                                            <text x="55" y="95" font-size="10">5 cm</text>
+                                            <text x="80" y="125" fill="green" font-size="10">Base diagonal</text>
+                                            <text x="95" y="100" fill="#3b82f6" font-weight="bold" font-size="10">Space diagonal</text>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p><strong>Step 1:</strong> Find the diagonal of the base rectangle</p>
+                                    <p>diagonal² = 3² + 4² = 9 + 16 = 25</p>
+                                    <p>diagonal = 5 cm</p>
+                                    
+                                    <p><strong>Step 2:</strong> Find the space diagonal using Pythagoras again</p>
+                                    <p>space diagonal² = base diagonal² + height²</p>
+                                    <p>space diagonal² = 5² + 5² = 25 + 25 = 50</p>
+                                    <p>space diagonal = √50 = 5√2 ≈ 7.07 cm</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final Quiz Section -->
+    <section class="container mx-auto px-4 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-4">Test Your Knowledge</h2>
+            <p class="mb-6">Let's see how well you understand the Pythagorean theorem with this quick quiz.</p>
+            
+            <div class="sketch-notice mb-4">
+                <i class="fas fa-pencil-alt mr-2 text-yellow-600"></i> Remember: Always sketch your triangle before attempting to solve the problems below!
+            </div>
+            
+            <div id="quiz-container">
+                <div id="question1" class="mb-6">
+                    <h3 class="font-bold">Question 1:</h3>
+                    <p class="mb-2">In a right triangle, if the legs have lengths of 6 and 8, what is the length of the hypotenuse?</p>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <button class="quiz-option p-2 border rounded hover:bg-blue-100" onclick="checkAnswer(1, 'A')">A) 9</button>
+                        <button class="quiz-option p-2 border rounded hover:bg-blue-100" onclick="checkAnswer(1, 'B')">B) 10</button>
+                        <button class="quiz-option p-2 border rounded hover:bg-blue-100" onclick="checkAnswer(1, 'C')">C) 12</button>
+                        <button class="quiz-option p-2 border rounded hover:bg-blue-100" onclick="checkAnswer(1, 'D')">D) 14</button>
+                    </div>
+                    <div id="feedback1" class="hidden p-2 rounded"></div>
+                </div>
+                
+                <div id="question2" class="mb-6">
+                    <h3 class="font-bold">Question 2:</h3>
+                    <p class="mb-2">Is a triangle with sides of lengths 9, 40, and 41 a right triangle?</p>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <button class="quiz-option p-2 border rounded hover:bg-blue-100" onclick="checkAnswer(2, 'A')">A) Yes</button>
+                        <button class="quiz-option p-2 border rounded hover:bg-blue-100" onclick="checkAnswer(2, 'B')">B) No</button>
+                    </div>
+                    <div id="feedback2" class="hidden p-2 rounded"></div>
+                </div>
+                
+                <div id="question3" class="mb-6">
+                    <h3 class="font-bold">Question 3:</h3>
+                    <p class="mb-2">A ladder reaches 8 meters up a wall. The foot of the ladder is 3 meters from the wall. How long is the ladder?</p>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <button class="quiz-option p-2 border rounded hover:bg-blue-100" onclick="checkAnswer(3, 'A')">A) 7 meters</button>
+                        <button class="quiz-option p-2 border rounded hover:bg-blue-100" onclick="checkAnswer(3, 'B')">B) 8.5 meters</button>
+                        <button class="quiz-option p-2 border rounded hover:bg-blue-100" onclick="checkAnswer(3, 'C')">C) 9.3 meters</button>
+                        <button class="quiz-option p-2 border rounded hover:bg-blue-100" onclick="checkAnswer(3, 'D')">D) 8.6 meters</button>
+                    </div>
+                    <div id="feedback3" class="hidden p-2 rounded"></div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="progress-bar">
+                        <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
+                    </div>
+                    <p id="quiz-score" class="text-center mt-2">Score: 0/3</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-xl font-bold">Pythagoras' Theorem</h3>
+                    <p>Interactive Learning Guide</p>
+                </div>
+                
+                <div class="flex flex-col items-center md:items-end">
+                    <p>For further study and practice, refer to pages 57, 64-67, and 74 in your textbook.</p>
+                    <p class="text-sm mt-2">© 2023 Math Learning Resources</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle solution visibility
+        function toggleSolution(id) {
+            const solution = document.getElementById(`${id}Solution`);
+            const button = document.getElementById(`${id}Btn`);
+            
+            if (solution.classList.contains('hidden')) {
+                solution.classList.remove('hidden');
+                button.textContent = 'Hide Solution';
+            } else {
+                solution.classList.add('hidden');
+                button.textContent = 'Show Solution';
+            }
+        }
+        
+        // Triangle Canvas for Learning Objective 1
+        const canvas = document.getElementById('triangleCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        function updateTriangle() {
+            const a = parseFloat(document.getElementById('sideA').value);
+            const b = parseFloat(document.getElementById('sideB').value);
+            const c = Math.sqrt(a*a + b*b);
+            
+            // Update hypotenuse value and calculation
+            document.getElementById('hypotenuseValue').textContent = c.toFixed(2);
+            document.getElementById('calculation').innerHTML = 
+                `AB² + AC² = BC²<br>` +
+                `${a}² + ${b}² = BC²<br>` +
+                `${a*a} + ${b*b} = BC²<br>` +
+                `${a*a + b*b} = BC²<br>` +
+                `BC = √${a*a + b*b} = ${c.toFixed(2)}`;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Set scaling factor to ensure triangle fits on canvas
+            const maxDimension = Math.max(a, b, c);
+            const scale = Math.min(canvas.width, canvas.height) * 0.7 / maxDimension;
+            
+            // Calculate coordinates
+            const startX = 60;
+            const startY = canvas.height - 60;
+            const endX = startX + a * scale;
+            const endY = startY;
+            const topX = startX;
+            const topY = startY - b * scale;
+            
+            // Draw triangle
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.lineTo(topX, topY);
+            ctx.closePath();
+            ctx.strokeStyle = "#333";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Fill triangle with light color
+            ctx.fillStyle = "rgba(59, 130, 246, 0.2)";
+            ctx.fill();
+            
+            // Draw right angle symbol
+            ctx.beginPath();
+            ctx.moveTo(startX + 20, startY);
+            ctx.lineTo(startX + 20, startY - 20);
+            ctx.lineTo(startX, startY - 20);
+            ctx.strokeStyle = "#333";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            
+            // Label the sides
+            ctx.font = "16px Arial";
+            ctx.fillStyle = "#333";
+            
+            // Side a (AB)
+            ctx.fillText(`AB = ${a}`, startX + a * scale / 2 - 20, startY + 25);
+            
+            // Side b (AC)
+            ctx.fillText(`AC = ${b}`, startX - 45, startY - b * scale / 2);
+            
+            // Hypotenuse (side c - BC)
+            ctx.fillText(`BC = ${c.toFixed(2)}`, (startX + endX + topX) / 3, (startY + endY + topY) / 3 - 10);
+            
+            // Label vertices with capital letters
+            ctx.font = "bold 18px Arial";
+            ctx.fillStyle = "#000";
+            ctx.fillText("A", startX - 20, startY + 5);
+            ctx.fillText("B", endX + 10, endY + 5);
+            ctx.fillText("C", topX - 20, topY - 10);
+        }
+        
+        // Rectangle Checker Canvas for Learning Objective 2
+        const checkerCanvas = document.getElementById('rectangle-checker-canvas');
+        const checkerCtx = checkerCanvas.getContext('2d');
+        
+        function updateCheckerTriangle() {
+            const a = parseFloat(document.getElementById('checkSideA').value);
+            const b = parseFloat(document.getElementById('checkSideB').value);
+            const c = parseFloat(document.getElementById('checkSideC').value);
+            
+            // Check if triangle can be formed
+            if (a + b <= c || a + c <= b || b + c <= a) {
+                document.getElementById('verificationResult').innerHTML = 
+                    `These sides cannot form a triangle.<br>` +
+                    `For a triangle, the sum of any two sides must be greater than the third side.`;
+                
+                // Clear canvas
+                checkerCtx.clearRect(0, 0, checkerCanvas.width, checkerCanvas.height);
+                checkerCtx.font = "16px Arial";
+                checkerCtx.fillStyle = "red";
+                checkerCtx.fillText("Invalid triangle dimensions", 100, 150);
+                return;
+            }
+            
+            // Verify if it's a right triangle
+            const isRightTriangle = Math.abs((a*a + b*b) - (c*c)) < 0.001;
+            
+            // Update verification result
+            document.getElementById('verificationResult').innerHTML = 
+                `AB² + AC² = ${a}² + ${b}² = ${a*a} + ${b*b} = ${a*a + b*b}<br>` +
+                `BC² = ${c}² = ${c*c}<br>` +
+                (isRightTriangle ? 
+                 `Since AB² + AC² = BC², this triangle is rectangular ✓` : 
+                 `Since AB² + AC² ≠ BC², this triangle is NOT rectangular ✗`);
+            
+            // Clear canvas
+            checkerCtx.clearRect(0, 0, checkerCanvas.width, checkerCanvas.height);
+            
+            // Calculate triangle coordinates using law of cosines
+            const cosA = (b*b + c*c - a*a) / (2 * b * c);
+            const angleA = Math.acos(cosA);
+            
+            // Set scaling factor to ensure triangle fits on canvas
+            const maxDimension = Math.max(a, b, c);
+            const scale = Math.min(checkerCanvas.width, checkerCanvas.height) * 0.6 / maxDimension;
+            
+            const startX = checkerCanvas.width / 2 - c * scale / 2;
+            const startY = checkerCanvas.height - 60;
+            const endX = startX + c * scale;
+            const endY = startY;
+            const topX = startX + b * scale * Math.cos(angleA);
+            const topY = startY - b * scale * Math.sin(angleA);
+            
+            // Draw triangle
+            checkerCtx.beginPath();
+            checkerCtx.moveTo(startX, startY);
+            checkerCtx.lineTo(endX, endY);
+            checkerCtx.lineTo(topX, topY);
+            checkerCtx.closePath();
+            checkerCtx.strokeStyle = isRightTriangle ? "#22c55e" : "#333";
+            checkerCtx.lineWidth = 2;
+            checkerCtx.stroke();
+            
+            // Fill triangle with light color
+            checkerCtx.fillStyle = isRightTriangle ? "rgba(34, 197, 94, 0.2)" : "rgba(239, 68, 68, 0.2)";
+            checkerCtx.fill();
+            
+            // Draw right angle symbol if it's a right triangle
+            if (isRightTriangle) {
+                // Determine which angle is the right angle
+                if (Math.abs((a*a + b*b) - (c*c)) < 0.001) {
+                    // Right angle is at vertex C (opposite to side c)
+                    checkerCtx.beginPath();
+                    checkerCtx.moveTo(topX - 20, topY);
+                    checkerCtx.lineTo(topX - 20, topY + 20);
+                    checkerCtx.lineTo(topX, topY + 20);
+                    checkerCtx.strokeStyle = "#22c55e";
+                    checkerCtx.lineWidth = 2;
+                    checkerCtx.stroke();
+                } else if (Math.abs((a*a + c*c) - (b*b)) < 0.001) {
+                    // Right angle is at vertex B (opposite to side b)
+                    checkerCtx.beginPath();
+                    checkerCtx.moveTo(endX - 20, endY);
+                    checkerCtx.lineTo(endX - 20, endY - 20);
+                    checkerCtx.lineTo(endX, endY - 20);
+                    checkerCtx.strokeStyle = "#22c55e";
+                    checkerCtx.lineWidth = 2;
+                    checkerCtx.stroke();
+                } else if (Math.abs((b*b + c*c) - (a*a)) < 0.001) {
+                    // Right angle is at vertex A (opposite to side a)
+                    checkerCtx.beginPath();
+                    checkerCtx.moveTo(startX + 20, startY);
+                    checkerCtx.lineTo(startX + 20, startY - 20);
+                    checkerCtx.lineTo(startX, startY - 20);
+                    checkerCtx.strokeStyle = "#22c55e";
+                    checkerCtx.lineWidth = 2;
+                    checkerCtx.stroke();
+                }
+            }
+            
+            // Label the sides
+            checkerCtx.font = "16px Arial";
+            checkerCtx.fillStyle = "#333";
+            
+            // Side c (BC - bottom)
+            checkerCtx.fillText(`BC = ${c}`, (startX + endX) / 2 - 15, startY + 25);
+            
+            // Side b (AC - right side)
+            const middleRightX = (endX + topX) / 2 + 10;
+            const middleRightY = (endY + topY) / 2;
+            checkerCtx.fillText(`AC = ${b}`, middleRightX, middleRightY);
+            
+            // Side a (AB - left side)
+            const middleLeftX = (startX + topX) / 2 - 45;
+            const middleLeftY = (startY + topY) / 2;
+            checkerCtx.fillText(`AB = ${a}`, middleLeftX, middleLeftY);
+            
+            // Label vertices with capital letters
+            checkerCtx.font = "bold 18px Arial";
+            checkerCtx.fillStyle = "#000";
+            checkerCtx.fillText("A", startX - 20, startY + 5);
+            checkerCtx.fillText("B", endX + 10, endY + 5);
+            checkerCtx.fillText("C", topX, topY - 10);
+        }
+        
+        // Quiz functionality
+        let score = 0;
+        const totalQuestions = 3;
+        const answers = {
+            1: 'B', // 10
+            2: 'A', // Yes
+            3: 'D'  // 8.6 meters
+        };
+        
+        function checkAnswer(questionNum, option) {
+            const feedbackElement = document.getElementById(`feedback${questionNum}`);
+            const questionElement = document.getElementById(`question${questionNum}`);
+            
+            // Get all options for this question
+            const options = questionElement.querySelectorAll('.quiz-option');
+            
+            // Disable all options after an answer is selected
+            options.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('opacity-50');
+            });
+            
+            feedbackElement.classList.remove('hidden');
+            
+            if (option === answers[questionNum]) {
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.classList.add('bg-green-100', 'text-green-800');
+                score++;
+            } else {
+                feedbackElement.textContent = `Incorrect. The correct answer is ${answers[questionNum]}.`;
+                feedbackElement.classList.add('bg-red-100', 'text-red-800');
+            }
+            
+            // Update progress and score
+            updateProgress();
+        }
+        
+        function updateProgress() {
+            const progressFill = document.getElementById('progress-bar-fill');
+            const scoreElement = document.getElementById('quiz-score');
+            
+            const progressPercentage = (score / totalQuestions) * 100;
+            progressFill.style.width = `${progressPercentage}%`;
+            scoreElement.textContent = `Score: ${score}/${totalQuestions}`;
+        }
+        
+        // Initialize canvases on page load
+        window.onload = function() {
+            updateTriangle();
+            updateCheckerTriangle();
+        };
+    </script>
+</body>
+</html>
